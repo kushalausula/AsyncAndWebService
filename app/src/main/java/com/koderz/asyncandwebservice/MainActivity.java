@@ -18,6 +18,18 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
 
+    OkHttpClient client = new OkHttpClient();
+
+    String run(String url) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,20 +67,15 @@ public class MainActivity extends AppCompatActivity {
             Log.i("TAG", "printLog preexecute");
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         protected Void doInBackground(Void... voids) {
-//            printLog();
-
-
-            String url="http://www.google.com";
+            String url="http://www.tollycinenews.com/webservices/category-videos.php?category=comedy";
             try {
-                response=MainActivity.run(url);
+                String response=run(url);
+                Log.i("TAG", "doInBackground: "+response);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
             return null;
         }
 
@@ -76,21 +83,9 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            Log.i("TAG", "printLog post exec "+response);
+
 
         }
     }
 
-    static OkHttpClient client = new OkHttpClient();
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    static String run(String url) throws IOException {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            return response.body().string();
-        }
-    }
 }
