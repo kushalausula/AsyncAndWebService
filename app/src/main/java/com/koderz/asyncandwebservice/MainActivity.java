@@ -6,8 +6,10 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -81,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                 String response = run(url);
                 //    Log.i("TAG", "doInBackground: "+response);
 
-
                 this.response = response;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -133,16 +134,21 @@ public class MainActivity extends AppCompatActivity {
         Context mContext;
         mContext = this;
 
-        RecyclerView.LayoutManager lmVertical=new LinearLayoutManager(mContext);
+        RecyclerView.LayoutManager manager;
+        manager = new LinearLayoutManager(mContext);
+       // manager = new LinearLayoutManager(MainActivity.this,LinearLayoutManager.HORIZONTAL,false);
+//        manager = new GridLayoutManager(mContext,2);
+
+
+       // manager = new StaggeredGridLayoutManager(3,LinearLayoutManager.VERTICAL);
 
         RecyclerAdapter recyclerAdapter=new RecyclerAdapter(mContext,singleArticles);
 
 
-        rvRvData.setLayoutManager(lmVertical);
+
+
+        rvRvData.setLayoutManager(manager);
         rvRvData.setAdapter(recyclerAdapter);
-
-
-
     }
 
 }
