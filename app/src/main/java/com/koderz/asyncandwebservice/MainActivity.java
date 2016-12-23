@@ -14,6 +14,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.koderz.asyncandwebservice.CallBackInterfaces.GetContentCallBack;
+import com.koderz.asyncandwebservice.asyncs.GetContentAsync;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,39 +24,30 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GetContentCallBack{
 
-
-    OkHttpClient client = new OkHttpClient();
-
-    String run(String url) throws IOException {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        Response response = client.newCall(request).execute();
-        return response.body().string();
-    }
-
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mContext = this;
         Button btn = (Button) findViewById(R.id.btn);
+
+
 
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                String url = "http://www.tollycinenews.com/webservices/category-videos.php?category=comedy";
 
-                new MyAsync().execute();
+
+                new GetContentAsync(url, mContext).execute();
             }
         });
     }
@@ -67,40 +61,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    class MyAsync extends AsyncTask<Void, Void, Void> {
-        String response;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Log.i("TAG", "printLog preexecute");
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            String url = "http://www.tollycinenews.com/webservices/category-videos.php?category=comedy";
-            try {
-                String response = run(url);
-                //    Log.i("TAG", "doInBackground: "+response);
-
-                this.response = response;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            try {
-                parseJson(response);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     ArrayList<SingleArticle> singleArticles;
 
@@ -130,25 +90,31 @@ public class MainActivity extends AppCompatActivity {
     private void loadRecycler(ArrayList<SingleArticle> singleArticles) {
 
 
-        RecyclerView rvRvData= (RecyclerView) findViewById(R.id.rvData);
+        RecyclerView rvRvData = (RecyclerView) findViewById(R.id.rvData);
         Context mContext;
         mContext = this;
 
         RecyclerView.LayoutManager manager;
         manager = new LinearLayoutManager(mContext);
-       // manager = new LinearLayoutManager(MainActivity.this,LinearLayoutManager.HORIZONTAL,false);
+        // manager = new LinearLayoutManager(MainActivity.this,LinearLayoutManager.HORIZONTAL,false);
 //        manager = new GridLayoutManager(mContext,2);
 
 
-       // manager = new StaggeredGridLayoutManager(3,LinearLayoutManager.VERTICAL);
+        // manager = new StaggeredGridLayoutManager(3,LinearLayoutManager.VERTICAL);
 
-        RecyclerAdapter recyclerAdapter=new RecyclerAdapter(mContext,singleArticles);
-
-
+        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(mContext, singleArticles);
 
 
         rvRvData.setLayoutManager(manager);
         rvRvData.setAdapter(recyclerAdapter);
     }
 
+    @Override
+    public void onContentRecieved(String data) {
+        try {
+            parseJson(data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }
