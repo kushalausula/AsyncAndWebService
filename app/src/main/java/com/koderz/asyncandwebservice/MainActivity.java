@@ -35,21 +35,22 @@ public class MainActivity extends AppCompatActivity implements GetContentCallBac
         setContentView(R.layout.activity_main);
 
         mContext = this;
-        Button btn = (Button) findViewById(R.id.btn);
+       // Button btn = (Button) findViewById(R.id.btn);
 
 
+        String url = "http://www.tollycinenews.com/webservices/category-videos.php?category=comedy";
+        new GetContentAsync(url, mContext).execute();
 
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String url = "http://www.tollycinenews.com/webservices/category-videos.php?category=comedy";
-
-
-                new GetContentAsync(url, mContext).execute();
-            }
-        });
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                String url = "http://www.tollycinenews.com/webservices/category-videos.php?category=comedy";
+//
+//
+//                new GetContentAsync(url, mContext).execute();
+//            }
+//        });
     }
 
     private void printLog() {
